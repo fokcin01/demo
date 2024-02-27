@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import client.to.ResourceTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -38,5 +39,6 @@ public class Controller {
         HttpRequest req = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/api/resources/all")).GET().build();
         HttpResponse resp = HttpClient.newHttpClient().send(req,HttpResponse.BodyHandlers.ofString());
         System.out.println(resp.body());
+        Object body = resp.body();
     }
 }
