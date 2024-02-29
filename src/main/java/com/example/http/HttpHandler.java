@@ -7,7 +7,7 @@ import com.example.http.uri.Requests;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import org.springframework.util.Assert;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +25,6 @@ public class HttpHandler<T> {
     public HttpHandler() {
         System.out.println("HttpHandler constructor");
         defaultServerUrl = PropertiesHandler.getProperties().getProperty(IKeys.DEFAULT_SERVER_URL.getValue());
-        Assert.notNull(defaultServerUrl, "default server url is null");
         httpClient = HttpClient.newHttpClient();
     }
 
@@ -58,7 +57,7 @@ public class HttpHandler<T> {
         try {
             CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, ResourceTO.class);
             return mapper.readValue(response, listType);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             throw new RuntimeException("exception by parsing json answer", e);
         }
     }
