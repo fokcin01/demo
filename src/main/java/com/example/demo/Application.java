@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.config.PropertiesHandler;
+
 import javax.swing.*;
 
 public class Application implements Runnable {
@@ -9,6 +11,7 @@ public class Application implements Runnable {
 
     @Override
     public void run() {
+        PropertiesHandler.init();
         JFrame frame = new JFrame("hueta ebanaya");
 //        JFrame frame = new Controller().getMain();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
