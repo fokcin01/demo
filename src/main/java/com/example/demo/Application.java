@@ -16,8 +16,10 @@ public class Application implements Runnable {
 //        JFrame frame = new Controller().getMain();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 300);
+        frame.setLocation(850,470);
 //        JButton button = new JButton("polnyi pizdec");
         frame.getContentPane().add(new Controller().getMain());
         frame.setVisible(true);
     }
+
 }
