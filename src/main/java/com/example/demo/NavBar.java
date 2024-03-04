@@ -1,23 +1,20 @@
 package com.example.demo;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class NavBar {
-    JMenu menu;
+    JMenuBar mb;
 
-    public JMenu getMenu() {
-        return menu;
+    public JMenuBar getMb() {
+        return mb;
     }
 
-    void MenuExample(JFrame frame) {
-
-        JMenuBar mb = new JMenuBar();
-        menu = new JMenu("Menu");
-
-
-        frame.setJMenuBar(mb);
-        frame.setSize(400, 400);
-        frame.setLayout(null);
-        frame.setVisible(true);
+    public NavBar() {
+        mb = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+        menu.setBackground(Color.DARK_GRAY);
+        menu.setSize(Integer.MAX_VALUE, 50);
+        mb.add(menu);
     }
 }
