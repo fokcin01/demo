@@ -23,6 +23,26 @@ public class ResourceController implements SwingController {
         init();
     }
 
+    @Override
+    public JPanel getControllerPanel() {
+        return main;
+    }
+
+    @Override
+    public void fillData() {
+        resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+        System.out.println("tos: " + resourceTOS);
+    }
+
+    @Override
+    public void configuration() {
+        main = new JPanel();
+        main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        main.setLayout(new BorderLayout());
+        initTable(resourceTOS);
+
+    }
+
     public void initTable(List<ResourceTO> resourceTOS) {
         JTable table = new JTable();
         table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"id", "name", "price"}));
@@ -52,25 +72,12 @@ public class ResourceController implements SwingController {
             }
         });
         table.setBorder(new LineBorder(Color.black));
-    }
 
-    @Override
-    public JPanel getControllerPanel() {
-        return main;
-    }
-
-    @Override
-    public void fillData() {
-        resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
-        System.out.println("tos: " + resourceTOS);
-    }
-
-    @Override
-    public void configuration() {
-        main = new JPanel();
-        main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        main.setLayout(new BorderLayout());
-        initTable(resourceTOS);
-
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem popupItem1 = new JMenuItem("popup first");
+        JMenuItem popupItem2 = new JMenuItem("popup second");
+        popupMenu.add(popupItem1);
+        popupMenu.add(popupItem2);
+        table.setComponentPopupMenu(popupMenu);
     }
 }
