@@ -32,8 +32,8 @@ public class ResourceController implements SwingController {
             });
         }
         table.setRowHeight(30);
-        table.setTableHeader(new JTableHeader());
-        main.add(table);
+        main.add(table.getTableHeader(), BorderLayout.NORTH);
+        main.add(table, BorderLayout.CENTER);
         main.setVisible(true);
 
         table.setEnabled(false);
