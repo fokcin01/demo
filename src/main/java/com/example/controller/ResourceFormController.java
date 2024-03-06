@@ -1,9 +1,9 @@
-package com.example.demo;
+package com.example.controller;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class EditWindow {
+public class ResourceFormController {
     public static void showEditWindow(JTable table, int row) {
         JFrame editFrame = new JFrame("Edit Window");
         JPanel editPanel = new JPanel(new GridLayout(0, 2));

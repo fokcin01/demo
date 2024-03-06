@@ -5,7 +5,8 @@ package com.example.http.uri;
  * значение добавляется к IKeys.DEFAULT_SERVER_URL
  */
 public enum Requests {
-    RESOURCES_ALL("resources/all");
+    RESOURCES_ALL("resources/all"),
+    USERS_ALL("users/all");
     private final String path;
 
     public String getPath() {

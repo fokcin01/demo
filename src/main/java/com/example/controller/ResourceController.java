@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.controller;
 
 import client.to.ResourceTO;
 import com.example.http.HttpHandler;
@@ -12,23 +12,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
-import static com.example.demo.EditWindow.showEditWindow;
+import static com.example.controller.ResourceFormController.showEditWindow;
 
 
-public class ResourceController {
+public class ResourceController implements SwingController {
     JPanel main;
-
-    public JPanel getMain() {
-        return main;
-    }
+    private List<ResourceTO> resourceTOS;
 
     public ResourceController() {
-        main = new JPanel();
-        main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        main.setLayout(new BorderLayout());
-        List<ResourceTO> resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
-        System.out.println("tos: " + resourceTOS);
-        initTable(resourceTOS);
+        init();
     }
 
     public void initTable(List<ResourceTO> resourceTOS) {
@@ -60,5 +52,25 @@ public class ResourceController {
             }
         });
         table.setBorder(new LineBorder(Color.black));
+    }
+
+    @Override
+    public JPanel getControllerPanel() {
+        return main;
+    }
+
+    @Override
+    public void fillData() {
+        resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+        System.out.println("tos: " + resourceTOS);
+    }
+
+    @Override
+    public void configuration() {
+        main = new JPanel();
+        main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        main.setLayout(new BorderLayout());
+        initTable(resourceTOS);
+
     }
 }
