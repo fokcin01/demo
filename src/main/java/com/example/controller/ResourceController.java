@@ -67,15 +67,21 @@ public class ResourceController implements SwingController {
                 if (e.getClickCount() == 2) {
                     int row = table.rowAtPoint(e.getPoint());
                     showEditWindow(table, row);
-
                 }
             }
         });
         table.setBorder(new LineBorder(Color.black));
 
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem popupItem1 = new JMenuItem("popup first");
-        JMenuItem popupItem2 = new JMenuItem("popup second");
+        JMenuItem popupItem1 = new JMenuItem("edit resource");
+        popupItem1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+//                super.mousePressed(e);
+                showEditWindow(table, table.rowAtPoint(e.getPoint()));
+            }
+        });
+        JMenuItem popupItem2 = new JMenuItem("пустая хуйня");
         popupMenu.add(popupItem1);
         popupMenu.add(popupItem2);
         table.setComponentPopupMenu(popupMenu);
