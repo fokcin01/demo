@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -47,17 +48,17 @@ public class HttpHandler<T> {
         HttpRequest finalRequest = uri.build();
         try {
             String answer = httpClient.send(finalRequest, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)).body();
-            return parseResult(answer);
+            return parseResult(answer, request.getDesClass());
 
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException("http exception", e);
         }
     }
 
-    private T parseResult(String response) {
+    private T parseResult(String response, Class<? extends Serializable> desClass) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, ResourceTO.class);
+            CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, desClass);
             return mapper.readValue(response, listType);
         } catch (IOException e) {
             throw new RuntimeException("exception by parsing json answer", e);
