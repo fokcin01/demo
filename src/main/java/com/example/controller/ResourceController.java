@@ -72,6 +72,14 @@ public class ResourceController implements SwingController {
         });
         table.setBorder(new LineBorder(Color.black));
 
+/**  Это сделала пародия на человека
+ *                                   фокс
+ *
+ * DefaultComboBoxModel<User> model = new DefaultComboBoxModel<>(users.toArray(new User[0]));
+ *         JComboBox<User> comboBox = new JComboBox<>(model);
+ */
+
+
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem popupItem1 = new JMenuItem("edit resource");
         popupItem1.addMouseListener(new MouseAdapter() {
