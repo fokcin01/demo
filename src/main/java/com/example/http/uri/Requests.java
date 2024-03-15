@@ -11,7 +11,8 @@ import java.io.Serializable;
  */
 public enum Requests {
     RESOURCES_ALL("resources/all", ResourceTO.class),
-    USERS_ALL("users/all", UserTO.class);
+    USERS_ALL("users/all", UserTO.class),
+    USERS_LOGIN("users/login", null);
     private final String path;
     /**
      * класс, в который будем десериализовать полученный json

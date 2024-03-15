@@ -38,12 +38,16 @@ public class HttpHandler<T> {
      * @param object  - объект, который мы отсылаем на сервер. Например, для сохранения
      * @return всегда получаем в ответ JSON в виде String
      */
-    public T sendRequest(Requests request, String object) {
+    public T sendRequest(Requests request, Serializable object) {
         HttpRequest.Builder uri = HttpRequest.newBuilder().uri(URI.create(defaultServerUrl.concat(request.getPath())));
         if (object == null) {
             uri.GET();
         } else {
-            uri.POST(HttpRequest.BodyPublishers.ofString(object));
+            try {
+                uri.POST(HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(object)));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
         HttpRequest finalRequest = uri.build();
         try {
@@ -56,7 +60,11 @@ public class HttpHandler<T> {
     }
 
     private T parseResult(String response, Class<? extends Serializable> desClass) {
+        if (desClass == null) {
+            return null;
+        }
         ObjectMapper mapper = new ObjectMapper();
+        System.out.println("response: " + response);
         try {
             CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, desClass);
             return mapper.readValue(response, listType);
