@@ -44,7 +44,9 @@ public class HttpHandler<T> {
             uri.GET();
         } else {
             try {
-                uri.POST(HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(object)));
+                String jsonValue = new ObjectMapper().writeValueAsString(object);
+                System.out.println("json value: " + jsonValue);
+                uri.POST(HttpRequest.BodyPublishers.ofString(jsonValue));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

@@ -23,6 +23,7 @@ import static com.example.controller.ResourceFormController.showEditWindow;
 public class ResourceController implements SwingController {
     JPanel main;
     JTable table = new JTable();
+    JComboBox<UserTO> comboBox = new JComboBox<>();
     private final List<ResourceTO> resourceTOS = new ArrayList<>();
     private List<UserTO> usersTOS = new ArrayList<>();
 
@@ -48,7 +49,6 @@ public class ResourceController implements SwingController {
         this.main = new JPanel();
         main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         main.setLayout(new BorderLayout());
-        JComboBox<UserTO> comboBox = new JComboBox<>();
         usersTOS.forEach(item -> {
             System.out.println("item: " + item);
             comboBox.addItem(item);
@@ -57,13 +57,18 @@ public class ResourceController implements SwingController {
         main.add(comboBox, BorderLayout.AFTER_LAST_LINE);
         comboBox.addActionListener(e -> {
             System.out.println("change item to: " + comboBox.getModel().getSelectedItem());
-            SwingUtilities.invokeLater(() -> {
-                new HttpHandler<>().sendRequest(Requests.USERS_LOGIN, (UserTO)comboBox.getModel().getSelectedItem());
-                List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
-                resourceTOS.clear();
-                resourceTOS.addAll(resources);
-                initTable(resourceTOS);
-            });
+            updateTable();
+        });
+        comboBox.setSelectedIndex(0);
+    }
+
+    public void updateTable() {
+        SwingUtilities.invokeLater(() -> {
+            new HttpHandler<>().sendRequest(Requests.USERS_LOGIN, (UserTO)comboBox.getModel().getSelectedItem());
+            List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+            resourceTOS.clear();
+            resourceTOS.addAll(resources);
+            initTable(resourceTOS);
         });
     }
 
@@ -80,7 +85,7 @@ public class ResourceController implements SwingController {
         main.add(table, BorderLayout.CENTER);
         main.setVisible(true);
 
-        table.setEnabled(false);
+//        table.setEnabled(false);
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -102,6 +107,7 @@ public class ResourceController implements SwingController {
             @Override
             public void mousePressed(MouseEvent e) {
 //                super.mousePressed(e);
+                System.out.println("get point: " + e.getPoint());
                 showEditWindow(table, table.rowAtPoint(e.getPoint()));
             }
         });
@@ -109,10 +115,7 @@ public class ResourceController implements SwingController {
         popupItem2.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-//                super.mousePressed(e);
-                int i = table.rowAtPoint(e.getPoint());
-                table.getSelectionModel().setSelectionInterval(i,i);
-                createDialog(i);
+                createDialog(table.getSelectedRow());
             }
         });
         popupMenu.add(popupItem1);
@@ -121,38 +124,23 @@ public class ResourceController implements SwingController {
 
     }
     private void createDialog(int rowNum) {
-
-//        final JDialog modelDialog = new JDialog(frame, "Swing Tester",
-//                Dialog.ModalityType.DOCUMENT_MODAL);
-//        modelDialog.setBounds(132, 132, 300, 200);
-//        Container dialogContainer = modelDialog.getContentPane();
-//        dialogContainer.setLayout(new BorderLayout());
-//        dialogContainer.add(new JLabel("                         Welcome to Swing!")
-//                , BorderLayout.CENTER);
-//        JPanel panel1 = new JPanel();
-//        panel1.setLayout(new FlowLayout());
-//        JButton okButton = new JButton("Ok");
-//        okButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                modelDialog.setVisible(false);
-//            }
-//        });
-//
-//        panel1.add(okButton);
-//        dialogContainer.add(panel1, BorderLayout.SOUTH);
-//
-//        return  modelDialog;
         int result = JOptionPane.showConfirmDialog(getControllerPanel(), "pohui");
-        System.out.println(result);
+        System.out.println("result: " + result);
         if (result == 0){
             System.out.println(rowNum +" rowNum");
-
-            new HttpHandler<>().sendRequest(Requests.RESOURCES_DELETE, (Serializable) table.getModel().
-                    getValueAt(rowNum,0));
+            Integer idColumnValue = (Integer) table.getValueAt(rowNum, 0);
+            ResourceTO res = new ResourceTO();
+            res.setId(idColumnValue);
+            deleteItem(res);
         }else {
-            
+            System.out.println("nothing");
         }
+    }
+
+    private void deleteItem(ResourceTO res) {
+        System.out.println("delete item with id: " + res.getId());
+        new HttpHandler<>().sendRequest(Requests.RESOURCES_DELETE, res);
+        updateTable();
     }
 
 }
