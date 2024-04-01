@@ -5,9 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ResourceFormController {
+import static javax.swing.JColorChooser.showDialog;
+
+public class ResourceFormController extends JFrame {
+
     public static void showEditWindow(JTable table, int row) {
         JFrame editFrame = new JFrame("Edit resource");
+
 
         editFrame.setLayout(new BorderLayout());
 
@@ -45,8 +49,8 @@ public class ResourceFormController {
         panelWithLabelsAndFields.add(priceLabel, createConstraint(0, 2));
         panelWithLabelsAndFields.add(priceField, createConstraint(1, 2));
 
-        editFrame.setLocation(860,500);
-        editFrame.setSize(800,400);
+        editFrame.setLocation(860, 500);
+        editFrame.setSize(800, 400);
 
         saveButton.addActionListener(e -> {
             table.setValueAt(Integer.parseInt(idField.getText()), row, 0);
@@ -55,7 +59,10 @@ public class ResourceFormController {
             editFrame.dispose();
         });
         editFrame.setVisible(true);
+
+
     }
+
 
     private static GridBagConstraints createConstraint(int column, int row) {
         return new GridBagConstraints(column, row, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);

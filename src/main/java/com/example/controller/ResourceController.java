@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +22,7 @@ import static com.example.controller.ResourceFormController.showEditWindow;
 
 public class ResourceController implements SwingController {
     JPanel main;
+    JTable table = new JTable();
     private final List<ResourceTO> resourceTOS = new ArrayList<>();
     private List<UserTO> usersTOS = new ArrayList<>();
 
@@ -43,7 +45,7 @@ public class ResourceController implements SwingController {
 
     @Override
     public void configuration() {
-        main = new JPanel();
+        this.main = new JPanel();
         main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         main.setLayout(new BorderLayout());
         JComboBox<UserTO> comboBox = new JComboBox<>();
@@ -66,7 +68,7 @@ public class ResourceController implements SwingController {
     }
 
     public void initTable(List<ResourceTO> resourceTOS) {
-        JTable table = new JTable();
+
         table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"id", "name", "price"}));
         for (ResourceTO to : resourceTOS) {
             ((DefaultTableModel) table.getModel()).addRow(new Object[]{
@@ -103,9 +105,54 @@ public class ResourceController implements SwingController {
                 showEditWindow(table, table.rowAtPoint(e.getPoint()));
             }
         });
-        JMenuItem popupItem2 = new JMenuItem("пустая хуйня");
+        JMenuItem popupItem2 = new JMenuItem("delete resource");
+        popupItem2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+//                super.mousePressed(e);
+                int i = table.rowAtPoint(e.getPoint());
+                table.getSelectionModel().setSelectionInterval(i,i);
+                createDialog(i);
+            }
+        });
         popupMenu.add(popupItem1);
         popupMenu.add(popupItem2);
         table.setComponentPopupMenu(popupMenu);
+
     }
+    private void createDialog(int rowNum) {
+
+//        final JDialog modelDialog = new JDialog(frame, "Swing Tester",
+//                Dialog.ModalityType.DOCUMENT_MODAL);
+//        modelDialog.setBounds(132, 132, 300, 200);
+//        Container dialogContainer = modelDialog.getContentPane();
+//        dialogContainer.setLayout(new BorderLayout());
+//        dialogContainer.add(new JLabel("                         Welcome to Swing!")
+//                , BorderLayout.CENTER);
+//        JPanel panel1 = new JPanel();
+//        panel1.setLayout(new FlowLayout());
+//        JButton okButton = new JButton("Ok");
+//        okButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                modelDialog.setVisible(false);
+//            }
+//        });
+//
+//        panel1.add(okButton);
+//        dialogContainer.add(panel1, BorderLayout.SOUTH);
+//
+//        return  modelDialog;
+        int result = JOptionPane.showConfirmDialog(getControllerPanel(), "pohui");
+        System.out.println(result);
+        if (result == 0){
+            System.out.println(rowNum +" rowNum");
+
+            new HttpHandler<>().sendRequest(Requests.RESOURCES_DELETE, (Serializable) table.getModel().
+                    getValueAt(rowNum,0));
+        }else {
+            
+        }
+    }
+
 }
