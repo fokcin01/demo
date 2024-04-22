@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public enum Requests {
     RESOURCES_ALL("resources/all", ResourceTO.class),
+    RESOURCES_SAVE("/resources/save", ResourceTO.class),
     RESOURCES_DELETE("resources/delete", null),
     USERS_ALL("users/all", UserTO.class),
     USERS_LOGIN("users/login", null);

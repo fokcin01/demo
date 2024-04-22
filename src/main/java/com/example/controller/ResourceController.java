@@ -10,11 +10,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.controller.ResourceCreateFormController.showCreateWindow;
 import static com.example.controller.ResourceFormController.showEditWindow;
 
 
@@ -84,14 +84,11 @@ public class ResourceController implements SwingController {
         main.setVisible(true);
 
 
-//        table.setEnabled(false);
-
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-//                int row = table.rowAtPoint(e.getPoint());
-//                int column = table.columnAtPoint(e.getPoint());
+
                 if (e.getClickCount() == 2) {
                     int row = table.rowAtPoint(e.getPoint());
                     showEditWindow(table, row);
@@ -105,9 +102,9 @@ public class ResourceController implements SwingController {
         popupItem1.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-//                super.mousePressed(e);
                 System.out.println("get point: " + e.getPoint());
-                showEditWindow(table, table.rowAtPoint(e.getPoint()));
+                showEditWindow(table, table.getSelectedRow());
+                updateTable();
             }
         });
         JMenuItem popupItem2 = new JMenuItem("delete resource");
@@ -121,7 +118,8 @@ public class ResourceController implements SwingController {
         popupItem3.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                showCreateWindow(table, table.getEditingRow());
+                showEditWindow(table, 0);
+                updateTable();
             }
         });
 
@@ -150,5 +148,4 @@ public class ResourceController implements SwingController {
         new HttpHandler<>().sendRequest(Requests.RESOURCES_DELETE, res);
         updateTable();
     }
-
 }
