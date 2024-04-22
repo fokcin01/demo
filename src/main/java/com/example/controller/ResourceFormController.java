@@ -62,10 +62,10 @@ public class ResourceFormController extends JFrame {
             saveButton.addActionListener(e -> {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 model.addRow(new Object[]{null, nameField.getText(), Integer.parseInt(priceField.getText())});
-                ResourceTO Resource = new ResourceTO();
-                Resource.setName(nameField.getText());
-                Resource.setPrice(Integer.parseInt(priceField.getText()));
-                saveItem(Resource);
+                ResourceTO resource = new ResourceTO();
+                resource.setName(nameField.getText());
+                resource.setPrice(Integer.parseInt(priceField.getText()));
+                saveItem(resource);
                 editFrame.dispose();
             });
         } else {
