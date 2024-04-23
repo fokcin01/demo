@@ -60,8 +60,6 @@ public class ResourceFormController extends JFrame {
             panelWithLabelsAndFields.add(priceField, createConstraint(1, 2));
 
             saveButton.addActionListener(e -> {
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                model.addRow(new Object[]{null, nameField.getText(), Integer.parseInt(priceField.getText())});
                 ResourceTO resource = new ResourceTO();
                 resource.setName(nameField.getText());
                 resource.setPrice(Integer.parseInt(priceField.getText()));
@@ -81,8 +79,6 @@ public class ResourceFormController extends JFrame {
             panelWithLabelsAndFields.add(priceField, createConstraint(1, 2));
 
             saveButton.addActionListener(e -> {
-                table.setValueAt(nameField.getText(), row, 1);
-                table.setValueAt(Integer.parseInt(priceField.getText()), row, 2);
                 ResourceTO resource = new ResourceTO();
                 resource.setId(id);
                 resource.setName(nameField.getText());

@@ -5,8 +5,6 @@ import com.example.config.IKeys;
 import com.example.config.PropertiesHandler;
 import com.example.http.uri.Requests;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
@@ -62,7 +60,7 @@ public class HttpHandler<T> {
     }
 
     private T parseResult(String response, Class<? extends Serializable> desClass) {
-        if (desClass == null) {
+        if (desClass == null || response == null || response.isEmpty()) {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
