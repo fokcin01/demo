@@ -3,6 +3,8 @@ package com.example.controller;
 import client.to.UserTO;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
+import com.example.ui.CustomPanel;
+import com.example.ui.CustomTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,7 +31,7 @@ public class UsersController implements SwingController {
     }
 
     public void initTable(List<UserTO> userTOS) {
-        JTable usersTable = new JTable();
+        JTable usersTable = new CustomTable();
         panel.add(usersTable, BorderLayout.CENTER);
         usersTable.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"id", "user"}));
         for (UserTO to: userTOS) {
@@ -43,7 +45,7 @@ public class UsersController implements SwingController {
 
     @Override
     public void configuration() {
-        this.panel = new JPanel();
+        this.panel = new CustomPanel();
         panel.setLayout(new BorderLayout());
         initTable(userTOS);
     }

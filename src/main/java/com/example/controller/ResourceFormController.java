@@ -3,6 +3,7 @@ package com.example.controller;
 import client.to.ResourceTO;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
+import com.example.ui.CustomPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +15,7 @@ public class ResourceFormController extends JFrame {
     public static void saveItem(ResourceTO res) {
         System.out.println("saved item with id: " + res.getId()+ " in ->ResFormCont(saveItem)");
         new HttpHandler<>().sendRequest(Requests.RESOURCES_SAVE, res);
+
     }
 
     public static void showEditWindow(JTable table, Integer row) {
@@ -21,9 +23,9 @@ public class ResourceFormController extends JFrame {
         editFrame.setLayout(new BorderLayout());
 
 
-        JPanel panelWithLabelsAndFields = new JPanel();
+        JPanel panelWithLabelsAndFields = new CustomPanel();
         panelWithLabelsAndFields.setLayout(new GridBagLayout());
-        JPanel panelWithButtons = new JPanel();
+        JPanel panelWithButtons = new CustomPanel();
 
         editFrame.add(panelWithLabelsAndFields, BorderLayout.CENTER);
         editFrame.add(panelWithButtons, BorderLayout.SOUTH);

@@ -63,6 +63,9 @@ public class HttpHandler<T> {
         if (desClass == null || response == null || response.isEmpty()) {
             return null;
         }
+        if (desClass.equals(String.class)) {
+            return (T)response;
+        }
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("response: " + response);
         try {

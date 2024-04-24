@@ -6,6 +6,7 @@ import client.to.UserTO;
 import com.example.config.PropertiesHandler;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
+import com.example.ui.CustomPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -29,7 +30,7 @@ public class Login implements Runnable{
         mainFrame.setLocationRelativeTo(null);  // эта хуйня центрует
         mainFrame.setVisible(true);
 
-        JPanel panelWithLabelsAndFields = new JPanel();
+        JPanel panelWithLabelsAndFields = new CustomPanel();
         panelWithLabelsAndFields.setLayout(new GridBagLayout());
         mainFrame.add(panelWithLabelsAndFields, BorderLayout.CENTER);
 
@@ -61,14 +62,16 @@ public class Login implements Runnable{
                 user.setUsername(loginField.getText());
                 user.setUserPassword(passField.getText());
                 login(user);
+                mainFrame.dispose();
             }
-            mainFrame.dispose();
+
+
         });
         JButton cancelButton = new JButton("cancel");
         cancelButton.setIcon(createImageIcon("cancel.png", 16, 16));
         cancelButton.addActionListener(e -> mainFrame.dispose());
 
-        JPanel panelWithButtons = new JPanel();
+        JPanel panelWithButtons = new CustomPanel();
         panelWithButtons.add(enterButton);
         panelWithButtons.add(cancelButton);
         mainFrame.add(panelWithButtons, BorderLayout.SOUTH);
@@ -103,6 +106,8 @@ public class Login implements Runnable{
         String answer = new HttpHandler<String>().sendRequest(Requests.USERS_LOGIN, user);
         if(answer.equals(Constants.LOGIN_OK)){
             System.out.println(Constants.LOGIN_OK);
+            Runnable app = new Application();
+            app.run();
         }else{
             System.out.println(Constants.LOGIN_FAILED);
         }

@@ -22,7 +22,6 @@ public class Application implements Runnable {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(900, 600);
         mainFrame.setLocation(500,300);
-//        mainFrame.getContentPane().add(new ResourceController().getControllerPanel(), BorderLayout.CENTER);
         mainFrame.setJMenuBar(navBar.getMb());
 
         mainFrame.setVisible(true);

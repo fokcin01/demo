@@ -4,13 +4,13 @@ import client.to.ResourceTO;
 import client.to.UserTO;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
+import com.example.ui.CustomPanel;
+import com.example.ui.CustomTable;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +20,8 @@ import static com.example.controller.ResourceFormController.showEditWindow;
 
 public class ResourceController implements SwingController {
     JPanel main;
-    JTable table = new JTable();
-    JComboBox<UserTO> comboBox = new JComboBox<>();
-    private final List<ResourceTO> resourceTOS = new ArrayList<>();
+    JTable table = new CustomTable();
+    private List<ResourceTO> resourceTOS = new ArrayList<>();
     private List<UserTO> usersTOS = new ArrayList<>();
 
     public ResourceController() {
@@ -36,7 +35,7 @@ public class ResourceController implements SwingController {
 
     @Override
     public void fillData() {
-//        resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+        resourceTOS = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
         usersTOS = new HttpHandler<List<UserTO>>().sendRequest(Requests.USERS_ALL, null);
         System.out.println("users: " + usersTOS);
         System.out.println("users array: " + Arrays.toString(usersTOS.toArray()));
@@ -44,26 +43,14 @@ public class ResourceController implements SwingController {
 
     @Override
     public void configuration() {
-        this.main = new JPanel();
+        this.main = new CustomPanel();
         main.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         main.setLayout(new BorderLayout());
-        usersTOS.forEach(item -> {
-            System.out.println("item: " + item);
-            comboBox.addItem(item);
-        });
-
-        main.add(comboBox, BorderLayout.AFTER_LAST_LINE);
-        comboBox.addActionListener(e -> {
-            System.out.println("change item to: " + comboBox.getModel().getSelectedItem());
-            updateTable();
-        });
-        comboBox.setSelectedIndex(0);
-
+        updateTable();
     }
 
     public void updateTable() {
         SwingUtilities.invokeLater(() -> {
-            new HttpHandler<>().sendRequest(Requests.USERS_LOGIN, (UserTO) comboBox.getModel().getSelectedItem());
             List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
             resourceTOS.clear();
             resourceTOS.addAll(resources);
@@ -95,7 +82,7 @@ public class ResourceController implements SwingController {
                 }
             }
         });
-        table.setBorder(new LineBorder(Color.black));
+//        table.setBorder(new LineBorder(Color.black));
 
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem popupItem1 = new JMenuItem("edit resource");

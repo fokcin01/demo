@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.ui.CustomPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,9 +19,9 @@ public class Test implements Runnable {
         frame.setLayout(new BorderLayout());
         //создаем одну панель с текстфилдами и лейблами для расположения
         //этой панели в центральной части BorderLayout
-        JPanel panelWithLabelsAndFields = new JPanel();
+        JPanel panelWithLabelsAndFields = new CustomPanel();
         //и вторую панель для кнопок, располагаться будет в южной части BorderLayout
-        JPanel panelWithButtons = new JPanel();
+        JPanel panelWithButtons = new CustomPanel();
         //создадим лейблы, филды и батоны
         JLabel idLabel = new JLabel("id");
         JTextField idField = new JTextField("1");
