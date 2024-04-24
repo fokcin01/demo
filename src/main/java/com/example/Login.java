@@ -1,5 +1,12 @@
 package com.example;
 
+import client.to.Constants;
+import client.to.ResourceTO;
+import client.to.UserTO;
+import com.example.config.PropertiesHandler;
+import com.example.http.HttpHandler;
+import com.example.http.uri.Requests;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,6 +21,7 @@ public class Login implements Runnable{
     @Override
     public void run() {
         JFrame mainFrame = new JFrame("Authorization");
+        PropertiesHandler.init();
         mainFrame.setLayout(new BorderLayout());
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(400, 250);
@@ -42,6 +50,20 @@ public class Login implements Runnable{
 
         JButton enterButton = new JButton("enter");
         enterButton.setIcon(createImageIcon("enter.png", 16, 16));
+        enterButton.addActionListener(e -> {
+            String login = loginField.getText();
+            String password = passField.getText();
+
+            if (login.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(mainFrame, "Login or password are required", "Go fuck yourself", JOptionPane.ERROR_MESSAGE);
+            } else {
+                UserTO user = new UserTO();
+                user.setUsername(loginField.getText());
+                user.setUserPassword(passField.getText());
+                login(user);
+            }
+            mainFrame.dispose();
+        });
         JButton cancelButton = new JButton("cancel");
         cancelButton.setIcon(createImageIcon("cancel.png", 16, 16));
         cancelButton.addActionListener(e -> mainFrame.dispose());
@@ -75,5 +97,14 @@ public class Login implements Runnable{
         return new GridBagConstraints(column, row, 1, 1, 1.0, 1.0,
                 GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL,
                 new Insets(0, 0, 0, 0), 0, 0);
+    }
+    public static void login(UserTO user) {
+        System.out.println("usersLogin: " + user.getUsername()+ " in -> login(userByLogin)");
+        String answer = new HttpHandler<String>().sendRequest(Requests.USERS_LOGIN, user);
+        if(answer.equals(Constants.LOGIN_OK)){
+            System.out.println(Constants.LOGIN_OK);
+        }else{
+            System.out.println(Constants.LOGIN_FAILED);
+        }
     }
 }
