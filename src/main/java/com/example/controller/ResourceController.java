@@ -21,6 +21,7 @@ import static com.example.controller.ResourceFormController.showEditWindow;
 public class ResourceController implements SwingController {
     JPanel main;
     JTable table = new CustomTable();
+    private static SwingWorker<Void, Void> swingWorker;
     private List<ResourceTO> resourceTOS = new ArrayList<>();
     private List<UserTO> usersTOS = new ArrayList<>();
 
@@ -50,70 +51,75 @@ public class ResourceController implements SwingController {
     }
 
     public void updateTable() {
-        SwingUtilities.invokeLater(() -> {
-            List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
-            resourceTOS.clear();
-            resourceTOS.addAll(resources);
-            initTable(resourceTOS);
-        });
+        swingWorker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+                resourceTOS.clear();
+                resourceTOS.addAll(resources);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                SwingUtilities.invokeLater(() -> initTable(resourceTOS));
+            }
+        };
+        swingWorker.execute();
     }
 
     public void initTable(List<ResourceTO> resourceTOS) {
-        table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"id", "name", "price"}));
-        for (ResourceTO to : resourceTOS) {
-            ((DefaultTableModel) table.getModel()).addRow(new Object[]{
-                    to.getId(), to.getName(), to.getPrice()
-            });
-        }
-        table.setRowHeight(30);
-        main.add(table.getTableHeader(), BorderLayout.NORTH);
-        main.add(table, BorderLayout.CENTER);
-        main.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            table.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"id", "name", "price"}));
+            for (ResourceTO to : resourceTOS) {
+                ((DefaultTableModel) table.getModel()).addRow(new Object[]{
+                        to.getId(), to.getName(), to.getPrice()
+                });
+            }
+            table.setRowHeight(30);
+            main.add(table.getTableHeader(), BorderLayout.NORTH);
+            main.add(table, BorderLayout.CENTER);
+            main.setVisible(true);
 
-
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-
-                if (e.getClickCount() == 2) {
-                    int row = table.rowAtPoint(e.getPoint());
-                    showEditWindow(table, row);
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (e.getClickCount() == 2) {
+                        int row = table.rowAtPoint(e.getPoint());
+                        ResourceFormController.showEditWindow(table, row, ResourceController.this);
+                    }
                 }
-            }
-        });
-//        table.setBorder(new LineBorder(Color.black));
+            });
 
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem popupItem1 = new JMenuItem("edit resource");
-        popupItem1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                System.out.println("get point: " + e.getPoint());
-                showEditWindow(table, table.getSelectedRow());
-                updateTable();
-            }
-        });
-        JMenuItem popupItem2 = new JMenuItem("delete resource");
-        popupItem2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                createDialog(table.getSelectedRow());
-            }
-        });
-        JMenuItem popupItem3 = new JMenuItem("create new resource");
-        popupItem3.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                showEditWindow(table, 0);
-                updateTable();
-            }
-        });
+            JPopupMenu popupMenu = new JPopupMenu();
+            JMenuItem popupItem1 = new JMenuItem("edit resource");
+            popupItem1.addActionListener(e -> {
+                System.out.println("get point: " + ((JMenuItem) e.getSource()).getLabel());
+                ResourceFormController.showEditWindow(table, table.getSelectedRow(), ResourceController.this);
+            });
+            JMenuItem popupItem2 = new JMenuItem("delete resource");
+            popupItem2.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    createDialog(table.getSelectedRow());
+                }
+            });
 
-        popupMenu.add(popupItem1);
-        popupMenu.add(popupItem2);
-        popupMenu.add(popupItem3);
-        table.setComponentPopupMenu(popupMenu);
+            JMenuItem popupItem3 = new JMenuItem("create new resource");
+            popupItem3.addActionListener(e -> {
+                ResourceFormController.showEditWindow(table, 0, ResourceController.this);
+            });
+
+            popupMenu.add(popupItem1);
+            popupMenu.add(popupItem2);
+            popupMenu.add(popupItem3);
+
+            popupMenu.add(popupItem1);
+            popupMenu.add(popupItem2);
+            popupMenu.add(popupItem3);
+            table.setComponentPopupMenu(popupMenu);
+        });
     }
 
     private void createDialog(int rowNum) {

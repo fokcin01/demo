@@ -8,20 +8,23 @@ import com.example.ui.CustomPanel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 
 public class ResourceFormController extends JFrame {
 
 
     public static void saveItem(ResourceTO res) {
-        System.out.println("saved item with id: " + res.getId()+ " in ->ResFormCont(saveItem)");
+        System.out.println("saved item with id: " + res.getId() + " in ->ResFormCont(saveItem)");
         new HttpHandler<>().sendRequest(Requests.RESOURCES_SAVE, res);
 
     }
 
-    public static void showEditWindow(JTable table, Integer row) {
+    public static void showEditWindow(JTable table, Integer row,ResourceController resourceController) {
+
         JFrame editFrame = new JFrame("Edit resource");
         editFrame.setLayout(new BorderLayout());
-
 
         JPanel panelWithLabelsAndFields = new CustomPanel();
         panelWithLabelsAndFields.setLayout(new GridBagLayout());
@@ -38,7 +41,7 @@ public class ResourceFormController extends JFrame {
         panelWithButtons.add(cancelButton);
 
         Integer id = (int) table.getValueAt(row, 0);
-        String name  = (String) table.getValueAt(row, 1);
+        String name = (String) table.getValueAt(row, 1);
         int price = (int) table.getValueAt(row, 2);
 
         JTextField idField = new JTextField(Integer.valueOf(id));
@@ -48,7 +51,7 @@ public class ResourceFormController extends JFrame {
         JLabel nameLabel = new JLabel("name");
         JLabel priceLabel = new JLabel("price");
 
-        System.out.println("id = "+id);
+        System.out.println("id = " + id);
         if (row == 0) {
             System.out.println("id == null");
             editFrame.setTitle("Create resource");
@@ -67,6 +70,7 @@ public class ResourceFormController extends JFrame {
                 resource.setPrice(Integer.parseInt(priceField.getText()));
                 saveItem(resource);
                 editFrame.dispose();
+                updateTableWithSwingWorker(resourceController);
             });
         } else {
             System.out.println("id != null");
@@ -87,6 +91,7 @@ public class ResourceFormController extends JFrame {
                 resource.setPrice(Integer.parseInt(priceField.getText()));
                 saveItem(resource);
                 editFrame.dispose();
+                updateTableWithSwingWorker(resourceController);
             });
         }
 
@@ -94,9 +99,26 @@ public class ResourceFormController extends JFrame {
         editFrame.setLocation(860, 500);
         editFrame.setSize(800, 400);
         editFrame.setVisible(true);
+
     }
 
     private static GridBagConstraints createConstraint(int column, int row) {
         return new GridBagConstraints(column, row, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
+    }
+
+    private static void updateTableWithSwingWorker(ResourceController resourceController) {
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                resourceController.updateTable();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                System.out.println("data saved");
+            }
+        };
+        worker.execute();
     }
 }
