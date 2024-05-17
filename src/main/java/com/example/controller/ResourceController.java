@@ -51,21 +51,10 @@ public class ResourceController implements SwingController {
     }
 
     public void updateTable() {
-        swingWorker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
-                resourceTOS.clear();
-                resourceTOS.addAll(resources);
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                SwingUtilities.invokeLater(() -> initTable(resourceTOS));
-            }
-        };
-        swingWorker.execute();
+        List<ResourceTO> resources = new HttpHandler<List<ResourceTO>>().sendRequest(Requests.RESOURCES_ALL, null);
+        resourceTOS.clear();
+        resourceTOS.addAll(resources);
+        initTable(resourceTOS);
     }
 
     public void initTable(List<ResourceTO> resourceTOS) {

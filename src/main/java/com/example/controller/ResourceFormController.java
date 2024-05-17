@@ -6,11 +6,7 @@ import com.example.http.uri.Requests;
 import com.example.ui.CustomPanel;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 
 public class ResourceFormController extends JFrame {
 
@@ -70,7 +66,7 @@ public class ResourceFormController extends JFrame {
                 resource.setPrice(Integer.parseInt(priceField.getText()));
                 saveItem(resource);
                 editFrame.dispose();
-                updateTableWithSwingWorker(resourceController);
+                resourceController.updateTable();
             });
         } else {
             System.out.println("id != null");
@@ -91,7 +87,7 @@ public class ResourceFormController extends JFrame {
                 resource.setPrice(Integer.parseInt(priceField.getText()));
                 saveItem(resource);
                 editFrame.dispose();
-                updateTableWithSwingWorker(resourceController);
+                resourceController.updateTable();
             });
         }
 
@@ -104,21 +100,5 @@ public class ResourceFormController extends JFrame {
 
     private static GridBagConstraints createConstraint(int column, int row) {
         return new GridBagConstraints(column, row, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
-    }
-
-    private static void updateTableWithSwingWorker(ResourceController resourceController) {
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                resourceController.updateTable();
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                System.out.println("data saved");
-            }
-        };
-        worker.execute();
     }
 }
