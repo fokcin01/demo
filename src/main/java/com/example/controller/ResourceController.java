@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.controller.ResourceFormController.showEditWindow;
-
 
 public class ResourceController implements SwingController {
     JPanel main;
     JTable table = new CustomTable();
+
     private static SwingWorker<Void, Void> swingWorker;
     private List<ResourceTO> resourceTOS = new ArrayList<>();
     private List<UserTO> usersTOS = new ArrayList<>();

@@ -10,7 +10,6 @@ import java.awt.*;
 
 public class ResourceFormController extends JFrame {
 
-
     public static void saveItem(ResourceTO res) {
         System.out.println("saved item with id: " + res.getId() + " in ->ResFormCont(saveItem)");
         new HttpHandler<>().sendRequest(Requests.RESOURCES_SAVE, res);
@@ -18,9 +17,12 @@ public class ResourceFormController extends JFrame {
     }
 
     public static void showEditWindow(JTable table, Integer row,ResourceController resourceController) {
-
         JFrame editFrame = new JFrame("Edit resource");
         editFrame.setLayout(new BorderLayout());
+
+        editFrame.setSize(800, 400);
+        editFrame.setLocationRelativeTo(null);  // эта хуйня центрует
+        editFrame.setVisible(true);
 
         JPanel panelWithLabelsAndFields = new CustomPanel();
         panelWithLabelsAndFields.setLayout(new GridBagLayout());
@@ -91,14 +93,9 @@ public class ResourceFormController extends JFrame {
             });
         }
 
-
-        editFrame.setLocation(860, 500);
-        editFrame.setSize(800, 400);
-        editFrame.setVisible(true);
-
     }
 
-    private static GridBagConstraints createConstraint(int column, int row) {
+    public static GridBagConstraints createConstraint(int column, int row) {
         return new GridBagConstraints(column, row, 1, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
     }
 }
