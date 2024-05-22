@@ -14,7 +14,9 @@ public enum Requests {
     RESOURCES_SAVE("resources/save", ResourceTO.class),
     RESOURCES_DELETE("resources/delete", null),
     USERS_ALL("users/all", UserTO.class),
-    USERS_LOGIN("users/login", String.class);
+    USERS_LOGIN("users/login", String.class),
+    USERS_REGISTRATION("users/registration", String.class);
+
     private final String path;
     /**
      * класс, в который будем десериализовать полученный json

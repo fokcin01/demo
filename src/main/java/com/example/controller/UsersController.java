@@ -76,13 +76,17 @@ public class UsersController implements SwingController {
 
         JTextField loginField = new JTextField();
         JPasswordField passField = new JPasswordField();
+        JTextField emailField = new JTextField();
         JLabel loginLabel = new JLabel("login");
         JLabel passLabel = new JLabel("password");
+        JLabel emailLabel = new JLabel("email");
 
         panelWithLabelsAndFields.add(loginLabel, createConstraint(0, 1));
         panelWithLabelsAndFields.add(loginField, createConstraint(1, 1));
         panelWithLabelsAndFields.add(passLabel, createConstraint(0, 2));
         panelWithLabelsAndFields.add(passField, createConstraint(1, 2));
+        panelWithLabelsAndFields.add(emailLabel, createConstraint(0, 3));
+        panelWithLabelsAndFields.add(emailField, createConstraint(1, 3));
 
         JPanel panelWithButtons = new CustomPanel();
         panelWithButtons.setLayout(new GridBagLayout());
@@ -91,12 +95,19 @@ public class UsersController implements SwingController {
         JButton enterButton = new JButton("enter");
         enterButton.setIcon(imReader.createImageIcon("enter.png", 16, 16));
         enterButton.addActionListener(e -> {
-            String login = loginField.getText();
-            String password = passField.getText();
+            String username = loginField.getText();
+            String password = new String(passField.getPassword());
+            String userEmail = emailField.getText();
 
-            if (login.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(regFrame, "Login or password are required", "Error", JOptionPane.ERROR_MESSAGE);
+            if (username.isEmpty() || password.isEmpty() || userEmail.isEmpty()) {
+                JOptionPane.showMessageDialog(regFrame, "Login, password or userEmail are required", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
+                UserTO user = new UserTO();
+                user.setId(null);
+                user.setUsername(username);
+                user.setUserPassword(password);
+                user.setEmail(userEmail);
+                regUser(user);
                 regFrame.dispose();
             }
         });
@@ -139,5 +150,10 @@ public class UsersController implements SwingController {
             }
         });
         return autlink;
+    }
+    public static void regUser(UserTO user) {
+        System.out.println("saved user with id: " + user.getId());
+        String answer = new HttpHandler<String>().sendRequest(Requests.USERS_REGISTRATION, user);
+        System.out.println(answer);
     }
 }

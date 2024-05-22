@@ -38,11 +38,20 @@ public class ResourceFormController extends JFrame {
         panelWithButtons.add(saveButton);
         panelWithButtons.add(cancelButton);
 
-        Integer id = (int) table.getValueAt(row, 0);
-        String name = (String) table.getValueAt(row, 1);
-        int price = (int) table.getValueAt(row, 2);
+        Integer id;
+        String name;
+        int price;
+        if (row == null || row == -1) {
+            id = null;
+            name = "Новый ресурс";
+            price = 0;
+        } else {
+            id = (int) table.getValueAt(row, 0);
+            name = (String) table.getValueAt(row, 1);
+            price = (int) table.getValueAt(row, 2);
+        }
 
-        JTextField idField = new JTextField(Integer.valueOf(id));
+        JTextField idField = new JTextField(id == null ? "": id.toString() );
         idField.setEditable(false);
 
         JLabel idLabel = new JLabel("id");
@@ -50,7 +59,7 @@ public class ResourceFormController extends JFrame {
         JLabel priceLabel = new JLabel("price");
 
         System.out.println("id = " + id);
-        if (row == 0) {
+        if (row == -1) {
             System.out.println("id == null");
             editFrame.setTitle("Create resource");
 

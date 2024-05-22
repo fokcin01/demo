@@ -96,19 +96,17 @@ public class ResourceController implements SwingController {
 
             JMenuItem popupItem3 = new JMenuItem("create new resource");
             popupItem3.addActionListener(e -> {
-                ResourceFormController.showEditWindow(table, 0, ResourceController.this);
+                ResourceFormController.showEditWindow(table, null, ResourceController.this);
             });
-
-            popupMenu.add(popupItem1);
-            popupMenu.add(popupItem2);
-            popupMenu.add(popupItem3);
 
             popupMenu.add(popupItem1);
             popupMenu.add(popupItem2);
             popupMenu.add(popupItem3);
             table.setComponentPopupMenu(popupMenu);
         });
+
     }
+
 
     private void createDialog(int rowNum) {
         int result = JOptionPane.showConfirmDialog(getControllerPanel(), "pohui");
