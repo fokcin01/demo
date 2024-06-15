@@ -61,7 +61,10 @@ public class Login implements Runnable {
         mainFrame.add(panelWithButtons, BorderLayout.SOUTH);
 
         JButton enterButton = new JButton("enter");
+        mainFrame.getRootPane().setDefaultButton(enterButton);
         enterButton.setIcon(imReader.createImageIcon("enter.png", 16, 16));
+
+
         enterButton.addActionListener(e -> {
             String login = loginField.getText();
             String password = passField.getText();
