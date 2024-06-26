@@ -1,8 +1,10 @@
 package com.example.navbar;
 
+import com.example.controller.chat.ChatController;
 import com.example.controller.ResourceController;
 import com.example.controller.UsersController;
 import com.example.listener.MenuActionListener;
+import com.example.ui.CustomMenuItem;
 
 import javax.swing.*;
 
@@ -15,15 +17,16 @@ public class NavBar {
 
     public NavBar(JFrame mainFrame) {
         mb = new JMenuBar();
-        JMenuItem menu = new JMenuItem("Resources");
-        JMenuItem resourcesAll = new JMenuItem("All resources");
-        JMenuItem users = new JMenuItem("Users");
+        mb.setBorderPainted(true);
+        JMenuItem chat = new CustomMenuItem("Chat");
+        JMenuItem resourcesAll = new CustomMenuItem("All resources");
+        JMenuItem users = new CustomMenuItem("Users");
 
         resourcesAll.addActionListener(new MenuActionListener(mainFrame, new ResourceController()));
-//        menu.addActionListener(new MenuActionListener(mainFrame, null));
+        chat.addActionListener(new MenuActionListener(mainFrame, new ChatController()));
         users.addActionListener(new MenuActionListener(mainFrame, new UsersController()));
 
-        mb.add(menu);
+        mb.add(chat);
         mb.add(users);
         mb.add(resourcesAll);
     }

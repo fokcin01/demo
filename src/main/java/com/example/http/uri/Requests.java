@@ -1,7 +1,9 @@
 package com.example.http.uri;
 
+import client.to.LoginAnswer;
 import client.to.ResourceTO;
 import client.to.UserTO;
+import client.to.chat.ChatTo;
 
 import java.io.Serializable;
 
@@ -13,8 +15,10 @@ public enum Requests {
     RESOURCES_ALL("resources/all", ResourceTO.class),
     RESOURCES_SAVE("resources/save", ResourceTO.class),
     RESOURCES_DELETE("resources/delete", null),
+    CHAT_CREATE("chat", null),
+    CHATS_FOR_USER("chat", ChatTo.class),
     USERS_ALL("users/all", UserTO.class),
-    USERS_LOGIN("users/login", String.class),
+    USERS_LOGIN("users/login", LoginAnswer.class),
     USERS_REGISTRATION("users/registration", String.class);
 
     private final String path;

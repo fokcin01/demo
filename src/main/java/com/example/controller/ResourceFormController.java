@@ -4,15 +4,18 @@ import client.to.ResourceTO;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
 import com.example.ui.CustomPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ResourceFormController extends JFrame {
+    private static final Logger logger = LoggerFactory.getLogger(ResourceFormController.class);
 
     public static void saveItem(ResourceTO res) {
-        System.out.println("saved item with id: " + res.getId() + " in ->ResFormCont(saveItem)");
-        new HttpHandler<>().sendRequest(Requests.RESOURCES_SAVE, res);
+        logger.info("saved item with id: " + res.getId() + " in ->ResFormCont(saveItem)");
+        new HttpHandler().sendRequestAndGetJson(Requests.RESOURCES_SAVE, res);
 
     }
 
@@ -58,9 +61,9 @@ public class ResourceFormController extends JFrame {
         JLabel nameLabel = new JLabel("name");
         JLabel priceLabel = new JLabel("price");
 
-        System.out.println("id = " + id);
+        logger.info("id = " + id);
         if (row == -1) {
-            System.out.println("id == null");
+            logger.info("id == null");
             editFrame.setTitle("Create resource");
 
             JTextField nameField = new JTextField();
@@ -80,7 +83,7 @@ public class ResourceFormController extends JFrame {
                 resourceController.updateTable();
             });
         } else {
-            System.out.println("id != null");
+            logger.info("id != null");
             JTextField nameField = new JTextField(name);
             JTextField priceField = new JTextField(String.valueOf(price));
 

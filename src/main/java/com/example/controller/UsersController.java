@@ -1,12 +1,20 @@
 package com.example.controller;
 
 import client.to.UserTO;
+import client.to.chat.ChatTo;
 import com.example.Login;
-import com.example.Services.ImageReader;
+import com.example.http.Wrapper;
+import com.example.http.WrapperDeserializer;
+import com.example.services.ImageReader;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
 import com.example.ui.CustomPanel;
 import com.example.ui.CustomTable;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,11 +22,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.controller.ResourceFormController.createConstraint;
 
 public class UsersController implements SwingController {
+    private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
     JPanel panel;
     private List<UserTO> userTOS;
     ImageReader imReader = new ImageReader();
@@ -34,8 +44,22 @@ public class UsersController implements SwingController {
 
     @Override
     public void fillData() {
-        userTOS = new HttpHandler<List<UserTO>>().sendRequest(Requests.USERS_ALL, null);
-        System.out.println("tos: " + userTOS);
+        userTOS = getUsersTos(new HttpHandler().sendRequestAndGetJson(Requests.USERS_ALL, null));
+        logger.info("tos: " + userTOS);
+    }
+
+    private List<UserTO> getUsersTos(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Wrapper.class, new WrapperDeserializer());
+        objectMapper.registerModule(module);
+        try {
+            return objectMapper.readValue(json, new TypeReference<List<UserTO>>(){});
+        } catch (IOException e) {
+            logger.error("exception at reading json", e);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void initTable(List<UserTO> userTOS) {
@@ -152,8 +176,8 @@ public class UsersController implements SwingController {
         return autlink;
     }
     public static void regUser(UserTO user) {
-        System.out.println("saved user with id: " + user.getId());
-        String answer = new HttpHandler<String>().sendRequest(Requests.USERS_REGISTRATION, user);
-        System.out.println(answer);
+        logger.info("saved user with id: " + user.getId());
+        String answer = new HttpHandler().sendRequestAndGetJson(Requests.USERS_REGISTRATION, user);
+        logger.info(answer);
     }
 }

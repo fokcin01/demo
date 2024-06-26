@@ -1,28 +1,34 @@
 package com.example;
 
 import client.to.Constants;
-import client.to.ResourceTO;
+import client.to.LoginAnswer;
 import client.to.UserTO;
-import com.example.Services.ImageReader;
+import com.example.http.Wrapper;
+import com.example.http.WrapperDeserializer;
+import com.example.services.ImageReader;
 import com.example.config.PropertiesHandler;
 import com.example.controller.UsersController;
 import com.example.http.HttpHandler;
 import com.example.http.uri.Requests;
 import com.example.ui.CustomPanel;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.io.Serializable;
 
 import static com.example.controller.ResourceFormController.createConstraint;
 
 public class Login implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(Login.class);
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Login());
     }
@@ -136,14 +142,27 @@ public class Login implements Runnable {
     }
 
     public static void login(UserTO user) {
-        System.out.println("usersLogin: " + user.getUsername() + " in -> login(userByLogin)");
-        String answer = new HttpHandler<String>().sendRequest(Requests.USERS_LOGIN, user);
-        if (answer.equals(Constants.LOGIN_OK)) {
-            System.out.println(Constants.LOGIN_OK);
-            Runnable app = new Application();
-            app.run();
-        } else {
-            System.out.println(Constants.LOGIN_FAILED);
+        logger.info("usersLogin: " + user.getUsername() + " in -> login(userByLogin)");
+        String answer = new HttpHandler().sendRequestAndGetJson(Requests.USERS_LOGIN, user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Wrapper.class, new WrapperDeserializer());
+        objectMapper.registerModule(module);
+        LoginAnswer loginAnswer = null;
+        try {
+            loginAnswer = objectMapper.readValue(answer, LoginAnswer.class);
+            if (loginAnswer.getAnswer().equals(Constants.LOGIN_OK)) {
+                logger.info(Constants.LOGIN_OK);
+                Application app = new Application();
+                Application.setLoggedUserId(loginAnswer.getLoggerUserId());
+                app.run();
+            } else {
+                logger.info(Constants.LOGIN_FAILED);
+            }
+        } catch (IOException e) {
+            logger.error("exception at reading json", e);
+            e.printStackTrace();
         }
+
     }
 }

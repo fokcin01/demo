@@ -7,6 +7,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Application implements Runnable {
+    /**
+     * id залогиненного юзера, которое хранится на клиенте
+     */
+    private static Integer loggedUserId;
+
+    protected static void setLoggedUserId(Integer userId) {
+        loggedUserId = userId;
+    }
+
+    public static Integer getLoggedUserId() {
+        return loggedUserId;
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Application());
@@ -14,6 +26,9 @@ public class Application implements Runnable {
 
     @Override
     public void run() {
+        if (getLoggedUserId() == null) {
+            throw new RuntimeException("logged user id in answer is null, залогинься как человек бля");
+        }
         JFrame mainFrame = new JFrame("hueta ebanaya");
         PropertiesHandler.init();
         NavBar navBar = new NavBar(mainFrame);
